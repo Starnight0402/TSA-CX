@@ -343,19 +343,85 @@
           )}
           <form onSubmit={handleSubmit} className="space-y-6 p-3 pt-4 max-w-2xl mx-auto">
             <h1 className="text-xl sm:text-2xl font-bold text-center mb-2">TSA | CX</h1>
-            {/* ...existing code... */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-2">
-              {/* ...existing code... */}
+              <div>
+                <label className="block text-xs font-semibold">Auditor Name</label>
+                <input id="auditorName" readOnly value={auditorName} className="w-full p-2 border rounded bg-gray-100"/>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold">Auditor ID</label>
+                <input id="auditorId" readOnly value={auditorId} className="w-full p-2 border rounded bg-gray-100"/>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold">Employee Name</label>
+                <input id="employeeName" value={employeeName} onChange={e=>{setEmployeeName(e.target.value);safeLS.set('employeeName',e.target.value);}} required className="w-full p-2 border rounded"/>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold">Employee ID</label>
+                <input id="employeeId" value={employeeId} onChange={e=>{setEmployeeId(e.target.value);safeLS.set('employeeId',e.target.value);}} required className="w-full p-2 border rounded"/>
+              </div>
             </div>
-            {/* ...existing code... */}
             {SECTIONS.map(sec=>(
               <div key={sec.id} id={`${sec.id}-section`} className="mb-4 report-box p-2 fade-in">
-                {/* ...existing code... */}
+                <h2 className="section-title">{sec.title}</h2>
+                <table className="w-full border-collapse mt-1 mb-2">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border px-2 py-1 text-left text-xs font-bold">Question</th>
+                      {options.map(([opt])=><th key={opt} className="border px-2 py-1 text-center text-xs uppercase">{opt}</th>)}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {sec.items.map(it=>{
+                      const key=`${sec.id}_${it.id}`;
+                      return (
+                        <tr id={key} key={it.id} className="even:bg-gray-50 hover:bg-gray-50">
+                          <td className="border px-2 py-1">{it.q}</td>
+                          {options.map(([opt])=>{
+                            const sel=resp[key]===opt;
+                            return (
+                              <td key={opt} className="border px-2 py-1 text-center">
+                                <button
+                                  type="button"
+                                  onClick={()=>handleOption(sec,it,opt)}
+                                  className={
+                                    sel
+                                      ? `${colorMap[opt].selected} px-2 py-0.5 text-xs rounded-full transition`
+                                      : `${colorMap[opt].base} px-2 py-0.5 text-xs rounded-full transition`
+                                  }
+                                >{opt.toUpperCase()}</button>
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <div className="mt-2 fade-in">
+                  <label className="block text-xs font-semibold">Section Remarks</label>
+                  <textarea
+                    value={remarks[sec.id] || ''}
+                    onChange={e => setRemarks(r => ({ ...r, [sec.id]: e.target.value }))}
+                    className="w-full p-2 border rounded mt-1"
+                    placeholder="Enter remarks for this section (optional)"
+                    rows={2}
+                  />
+                </div>
+                <div className="mt-2 fade-in">
+                  <label className="block text-xs font-semibold">Upload Images</label>
+                  <input type="file" accept="image/*" capture="environment" multiple onChange={e=>addImages(sec,e)} className="mt-1"/>
+                  <div className="flex space-x-2 mt-2 overflow-x-auto">
+                    {(imgs[sec.id]||[]).map((s,i)=><img key={i} src={s} className="w-16 h-16 object-cover rounded-md border"/>) }
+                  </div>
+                </div>
               </div>
             ))}
-            {/* ...existing code... */}
             <div className="flex space-x-4 fade-in">
-              {/* ...existing code... */}
+              <button type="button" onClick={resetAll} className="flex-1 bg-blue-100 py-3 rounded-full hover:bg-blue-200 transition">New Response</button>
+              <button type="submit" className={`flex-1 bg-green-100 py-3 rounded-full hover:bg-green-200 transition ${downloading?'opacity-70 pointer-events-none':''}`}>
+                {downloading? 'Generating Report...':'Submit & Download PDF'}
+              </button>
             </div>
           </form>
         </>
