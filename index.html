@@ -224,22 +224,28 @@
 
         // HEADER
         doc.setFillColor('#FFFFFF');
-        doc.rect(10,10,190,20,'F');
+        doc.rect(10,10,190,26,'F');
         doc.setFontSize(20);
         doc.setFont('helvetica','bold');
         doc.setTextColor('#263140');
         doc.text(`TSA | CX`, 105, 19, {align:'center'});
+        // Add Score and Percentage below the title
+        doc.setFontSize(12);
+        doc.setFont('helvetica','bold');
+        doc.setTextColor('#1e293b');
+        doc.text(`Score: ${total} / ${max}    |    Percentage: ${pct}%`, 105, 26, {align:'center'});
         doc.setFontSize(10);
         doc.setFont('helvetica','normal');
         doc.setTextColor('#24272e');
         // Left side (Date/Time and Auditor)
-        doc.text(`Date/Time: ${completion}`, 14, 28);
-        doc.text(`Auditor: ${auditorName}`, 14, 34);
+        doc.text(`Date/Time: ${completion}`, 14, 34);
+        doc.text(`Auditor: ${auditorName}`, 14, 40);
         // Right side (Employee ID and Name)
-        doc.text(`Employee ID: ${employeeId}`, 200-14, 28, {align:'right'});
-        doc.text(`Employee Name: ${employeeName}`, 200-14, 34, {align:'right'});
+        doc.text(`Employee ID: ${employeeId}`, 200-14, 34, {align:'right'});
+        doc.text(`Employee Name: ${employeeName}`, 200-14, 40, {align:'right'});
+        let y = 46;
 
-        let y = 40;
+        // y is now set above after header
         for(let s=0;s<SECTIONS.length;s++){
           const sec=SECTIONS[s];
           const bg = sectionBg[s%sectionBg.length];
